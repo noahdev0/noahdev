@@ -75,7 +75,7 @@ export default function Home() {
   return (
     <div className={darkMode ? "" : "dark"}>
       <main className=" bg-white px-10 dark:bg-gray-900 md:px-20 lg:px-40">
-        <section className="min-h-screen bg-slate-100 dark:bg-cyan-950 px-3">
+        <section className="min-h-screen px-3">
           <nav className="py-10 mb-12 flex justify-between dark:text-white">
             <div className="text-center text-3xl font-bold py-8"></div>
 
@@ -139,7 +139,7 @@ export default function Home() {
                 </Link>
               </motion.div>
             </motion.div>
-            <div className="mx-auto container bg-gradient-to-b from-teal-500 rounded-full w-80 h-80 relative overflow-hidden mt-20 md:h-96 md:w-96">
+            <div className="mx-auto container bg-gradient-to-b from-teal-500 rounded-full w-80 h-80 relative overflow-hidden mt-20 md:h-96 md:w-96 border-8 border-spacing-4 border-white outline-dashed outline-4">
               <Image
                 src={"/noah.png"}
                 layout="fill"
