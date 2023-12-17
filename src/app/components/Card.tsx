@@ -1,5 +1,8 @@
+"use client";
 import React from "react";
+
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 interface CardProps {
   title: string;
@@ -17,6 +20,7 @@ const Card: React.FC<CardProps> = ({
   subtitle,
   image,
 }) => {
+  
   return (
     <div className="text-center flex flex-col justify-between items-center shadow-lg p-10 rounded-xl my-10 dark:bg-white flex-1">
       <Image src={image} width={100} height={100} alt="" />
@@ -25,9 +29,14 @@ const Card: React.FC<CardProps> = ({
       <h4 className="py-4 text-teal-600">{subtitle}</h4>
       {list &&
         list.map((item, i) => (
-          <p key={i} className="text-gray-800 py-1">
+          <motion.p
+            whileHover={{ scale: 1.1 }}
+            whileInView={{ scale: 1.1 }}
+            key={i}
+            className="text-gray-800 py-1"
+          >
             {item}
-          </p>
+          </motion.p>
         ))}
     </div>
   );

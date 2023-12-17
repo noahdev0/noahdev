@@ -1,7 +1,8 @@
 "use client";
-import Head from "next/head";
 import Link from "next/link";
+import Image from "next/image";
 import Card from "./components/Card";
+import ProjectImages from "./components/ProjectImages";
 import { cards } from "./utils/index";
 import {
   AiFillTwitterCircle,
@@ -20,23 +21,24 @@ import { motion, useAnimation } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { BsFillMoonStarsFill } from "react-icons/bs";
-// **********************************************************************************************************************
-import Image from "next/image";
-// import deved from "../public/dev-ed-wave.png";
-// import code from "../public/code.png";
-// import design from "../public/design.png";
-// import consulting from "../public/consulting.png";
-// import web1 from "../public/web1.png";
-// import web2 from "../public/web2.png";
-// import web3 from "../public/web3.png";
-// import web4 from "../public/web4.png";
-// import web5 from "../public/web5.png";
-// import web6 from "../public/web6.png";
 
 export default function Home() {
   const [darkMode, setDarkMode] = useState(true);
   const [replay, setReplay] = useState(true);
-  // Placeholder text data, as if from API
+  const controls = useAnimation();
+  const { ref, inView } = useInView();
+
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    if (inView) {
+      timeoutId = setTimeout(() => {
+        controls.start("visible");
+      }, 500); // Delay animation start by 500ms
+    } else {
+      controls.start("hidden");
+    }
+    return () => clearTimeout(timeoutId);
+  }, [controls, inView]);
 
   const headerContainer = {
     visible: {
@@ -57,20 +59,6 @@ export default function Home() {
       },
     },
   };
-  const controls = useAnimation();
-  const { ref, inView } = useInView();
-
-  useEffect(() => {
-    let timeoutId: any;
-    if (inView) {
-      timeoutId = setTimeout(() => {
-        controls.start("visible");
-      }, 500); // Delay animation start by 500ms
-    } else {
-      controls.start("hidden");
-    }
-    return () => clearTimeout(timeoutId);
-  }, [controls, inView]);
 
   const item = {
     hidden: { y: 20, opacity: 0 },
@@ -80,22 +68,21 @@ export default function Home() {
     },
   };
 
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
   return (
-    <div className={darkMode ? "dark" : ""}>
-      <Head>
-        <title>Noah Portfolio</title>
-        <meta name="description" content="noahdev0 portfolio" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <div className={darkMode ? "" : "dark"}>
       <main className=" bg-white px-10 dark:bg-gray-900 md:px-20 lg:px-40">
-        <section className="min-h-screen">
+        <section className="min-h-screen bg-slate-100 dark:bg-cyan-950 px-3">
           <nav className="py-10 mb-12 flex justify-between dark:text-white">
             <div className="text-center text-3xl font-bold py-8"></div>
 
             <ul className="flex items-center justify-between w-full ">
               <li>
                 <BsFillMoonStarsFill
-                  onClick={() => setDarkMode(!darkMode)}
+                  onClick={toggleDarkMode}
                   className=" cursor-pointer text-2xl"
                 />
               </li>
@@ -152,7 +139,7 @@ export default function Home() {
                 </Link>
               </motion.div>
             </motion.div>
-            <div className="mx-auto cont bg-gradient-to-b from-teal-500 rounded-full w-80 h-80 relative overflow-hidden mt-20 md:h-96 md:w-96">
+            <div className="mx-auto container bg-gradient-to-b from-teal-500 rounded-full w-80 h-80 relative overflow-hidden mt-20 md:h-96 md:w-96">
               <Image
                 src={"/noah.png"}
                 layout="fill"
@@ -223,68 +210,7 @@ export default function Home() {
               programming and teaching.
             </p>
           </div>
-          <div className="flex flex-col gap-10 py-10 lg:flex-row lg:flex-wrap">
-            <div className="basis-1/3 flex-1 ">
-              <Image
-                className="rounded-lg object-cover"
-                width={100}
-                height={100}
-                layout="responsive"
-                src={"/web1.png"}
-                alt=""
-              />
-            </div>
-            <div className="basis-1/3 flex-1">
-              <Image
-                className="rounded-lg object-cover"
-                width={"100"}
-                height={"100"}
-                layout="responsive"
-                src={"/web2.png"}
-                alt=""
-              />
-            </div>
-            <div className="basis-1/3 flex-1">
-              <Image
-                className="rounded-lg object-cover"
-                width={100}
-                height={100}
-                layout="responsive"
-                src={"/web3.png"}
-                alt=""
-              />
-            </div>
-            <div className="basis-1/3 flex-1">
-              <Image
-                className="rounded-lg object-cover"
-                width={100}
-                height={100}
-                layout="responsive"
-                src={"/web4.png"}
-                alt=""
-              />
-            </div>
-            <div className="basis-1/3 flex-1">
-              <Image
-                className="rounded-lg object-cover"
-                width={100}
-                height={100}
-                layout="responsive"
-                src={"/web5.png"}
-                alt=""
-              />
-            </div>
-            <div className="basis-1/3 flex-1">
-              <Image
-                className="rounded-lg object-cover"
-                width={100}
-                height={100}
-                layout="responsive"
-                src={"/web6.png"}
-                alt=""
-              />
-            </div>
-          </div>
+          <ProjectImages />
         </section>
       </main>
     </div>
