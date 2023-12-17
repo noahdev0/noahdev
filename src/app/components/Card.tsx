@@ -23,7 +23,12 @@ const Card: React.FC<CardProps> = ({
       <h3 className="text-lg font-medium pt-8 pb-2 ">{title}</h3>
       <p className="py-2">{content}</p>
       <h4 className="py-4 text-teal-600">{subtitle}</h4>
-      {list && list.map((item) => <p className="text-gray-800 py-1">{item}</p>)}
+      {list &&
+        list.map((item, i) => (
+          <p key={i} className="text-gray-800 py-1">
+            {item}
+          </p>
+        ))}
     </div>
   );
 };
