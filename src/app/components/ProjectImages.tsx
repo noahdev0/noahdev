@@ -13,6 +13,7 @@ const ProjectImages: React.FC = () => {
   ];
   return (
     <div className="flex flex-col gap-10 py-10 lg:flex-row lg:flex-wrap">
+      {/* eeddza */}
       {images.map((image, index) => (
         <motion.div
           whileHover={{ scale: 1.2 }}
