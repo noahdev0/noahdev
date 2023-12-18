@@ -6,7 +6,7 @@ export const cards = [
       "As a developer, I utilize the latest technologies to create efficient and scalable applications that meet your needs.",
     image: "/design.png",
     subtitle: "Technologies I Work With",
-    list: ["JavaScript", "React", "Node.js", "Express", "MongoDB"],
+    list: ["next.js", "React", "Node.js", "Express", "MongoDB", "tailwind", "MUI"],
   },
   {
     title: "Code your dream project",
@@ -14,7 +14,7 @@ export const cards = [
       " Do you have an idea for your next great website? Let's make it a reality.",
     image: "/code.png",
     subtitle: "Technologies I use:",
-    list: ["JavaScript", "Python", "Sass", "CSS"],
+    list: ["javascript", "typescript", "python", "Node.js" , "sql", "nosql"],
   },
   {
     title: "Consulting",
