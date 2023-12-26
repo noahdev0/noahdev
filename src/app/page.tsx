@@ -20,7 +20,9 @@ export default function Home() {
   const [darkMode, setDarkMode] = useState(true);
   const [replay, setReplay] = useState(true);
   const controls = useAnimation();
+
   const { ref, inView } = useInView();
+  const { ref: secounRef, inView: scoundElement } = useInView();
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
@@ -31,6 +33,12 @@ export default function Home() {
     } else {
       controls.start("hidden");
     }
+    if (scoundElement) {
+      timeoutId = setTimeout(() => {
+        controls.start("visible");
+      }, 500);
+    }
+
     return () => clearTimeout(timeoutId);
   }, [controls, inView]);
 

@@ -1,6 +1,14 @@
 import Image from "next/image";
 import React from "react";
 import { motion } from "framer-motion";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 const ProjectImages: React.FC = () => {
   const images = [
@@ -11,19 +19,45 @@ const ProjectImages: React.FC = () => {
     "/web5.png",
     "/web6.png",
   ];
+  //   return (
+  //     <div className={""}>
+  //       {/* eeddza */}
+  //       {images.map((image, index) => (
+  //         <motion.div
+  //           whileHover={{ scale: 1.2 }}
+  //           className="basis-1/4 flex-1 shadow-xl"
+  //           key={index}
+  //         >
+  //           <img src={image} alt={`Image ${index}`} />
+  //         </motion.div>
+  //       ))}
+  //     </div>
+  //   );
+  // };
   return (
-    <div className="flex flex-col gap-10 py-10 lg:flex-row lg:flex-wrap">
-      {/* eeddza */}
-      {images.map((image, index) => (
-        <motion.div
-          whileHover={{ scale: 1.2 }}
-          className="basis-1/4 flex-1 shadow-xl"
-          key={index}
-        >
-          <img src={image} alt={`Image ${index}`} />
-        </motion.div>
-      ))}
-    </div>
+    <Carousel className="dark:text-foreground ">
+      <CarouselContent className="">
+        {images.map((image, index) => (
+          <CarouselItem key={index}>
+            <div className="mx-auto ">
+              <Card className="w-full dark:bg-slate-800">
+                <CardContent className="flex aspect-square items-center justify-center p-6">
+                  <motion.div
+                    whileHover={{ scale: 1.2 }}
+                    className="basis-1/4 flex-1 shadow-xl"
+                    key={index}
+                  >
+                    <img src={image} alt={`Image ${index}`} />
+                  </motion.div>
+                </CardContent>
+              </Card>
+            </div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
   );
 };
 
