@@ -82,10 +82,12 @@ export default function Home() {
           <NavBar onClick={toggleDarkMode} />
 
           <div className="text-center py-10 md:px-20 lg:px-40">
-            <AnimatedText text="NoahDev0" />
+            <h2 className="text-5xl py-2 text-teal-600 font-medium dark:text-teal-400 md:text-6xl">
+              <AnimatedText text="NoahDev0" />
+            </h2>
 
             <h3 className="text-2xl py-2 dark:text-white md:text-3xl">
-              Full Stack web developer
+              <AnimatedText duration={2.5} text=" Full Stack web developer" />
             </h3>
             <p className="text-md p-5 leading-8 text-gray-800 dark:text-gray-200 max-w-xl mx-auto md:text-xl">
               Freelancer providing services for programming and design content
@@ -121,8 +123,9 @@ export default function Home() {
             <div className="mx-auto container bg-gradient-to-b from-teal-500 rounded-full w-80 h-80 relative overflow-hidden mt-20 md:h-96 md:w-96 border-8 border-spacing-4 border-white outline-dashed outline-4">
               <Image
                 src={"/noah.png"}
-                layout="fill"
-                objectFit="cover"
+                fill
+                sizes="100%"
+                priority
                 alt=""
                 className="rounded-full "
               />
