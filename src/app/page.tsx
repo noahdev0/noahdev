@@ -15,6 +15,7 @@ import { useState, useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { BsFillMoonStarsFill } from "react-icons/bs";
 import NavBar from "../components/NavBar";
+import AnimatedText from "@/components/AnimatedText";
 
 export default function Home() {
   const [darkMode, setDarkMode] = useState(true);
@@ -81,34 +82,7 @@ export default function Home() {
           <NavBar onClick={toggleDarkMode} />
 
           <div className="text-center py-10 md:px-20 lg:px-40">
-            <h2 className="text-5xl py-2 text-teal-600 font-medium dark:text-teal-400 md:text-6xl">
-              {"NoahDev0".split("").map((char, index) => (
-                <motion.span
-                  key={char + "-" + index}
-                  animate={{
-                    x: [0, 10, -10, 0].map(
-                      (x) => (Math.random() - 0.5) * x * 50
-                    ),
-                    y: [0, 10, -10, 0].map(
-                      (y) => (Math.random() - 0.5) * y * 100
-                    ),
-                    rotate: [0, 10, -10, 0].map(
-                      (r) => (Math.random() - 0.5) * r * 100
-                    ),
-                    // scale: [1, 1.2, 1.2, 1.2, 1].map((s) => s * Math.random()),
-                    // color: ["#ff008c", "#d309e1", "#9c1aff", "#7700ff"]
-                    
-                  }}
-                 
-                  transition={{ duration: 5 }}
-                  drag
-                  dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-                  className="inline-block"
-                >
-                  {char}
-                </motion.span>
-              ))}
-            </h2>
+            <AnimatedText text="NoahDev0" />
 
             <h3 className="text-2xl py-2 dark:text-white md:text-3xl">
               Full Stack web developer
