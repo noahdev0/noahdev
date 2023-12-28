@@ -75,7 +75,7 @@ export default function Home() {
   };
 
   return (
-    <div className={darkMode ? "" : "dark"}>
+    <div className={darkMode ? "dark" : ""}>
       <main className=" bg-white overflow-hidden  dark:bg-gray-900 md:px-20 lg:px-40">
         <section className="min-h-screen ">
           <NavBar onClick={toggleDarkMode} />
@@ -86,7 +86,7 @@ export default function Home() {
               animate={replay ? "visible" : "hidden"}
               variants={headerContainer}
               className="text-5xl py-2 text-teal-600 font-medium dark:text-teal-400 md:text-6xl"
-            >
+            > 
               Noah Ben Zina
             </motion.h2>
             <h3 className="text-2xl py-2 dark:text-white md:text-3xl">
