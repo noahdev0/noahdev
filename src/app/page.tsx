@@ -86,8 +86,28 @@ export default function Home() {
               animate={replay ? "visible" : "hidden"}
               variants={headerContainer}
               className="text-5xl py-2 text-teal-600 font-medium dark:text-teal-400 md:text-6xl"
-            > 
-              Noah Ben Zina
+            >
+              {"NoahDev0".split("").map((char, index) => (
+                <motion.span
+                  key={char + "-" + index}
+                  animate={{
+                    x: [0, 10, -10, 0].map(
+                      (x) => (Math.random() - 0.5) * x * 50
+                    ),
+                    y: [0, 10, -10, 0].map(
+                      (y) => (Math.random() - 0.5) * y * 100
+                    ),
+                  }}
+                  
+                  transition={{ duration: 5 }}
+                  drag
+                  dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                  className="inline-block"
+                 
+                >
+                  {char}
+                </motion.span>
+              ))}
             </motion.h2>
             <h3 className="text-2xl py-2 dark:text-white md:text-3xl">
               Full Stack web developer
