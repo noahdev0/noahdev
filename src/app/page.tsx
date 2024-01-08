@@ -43,14 +43,6 @@ export default function Home() {
     return () => clearTimeout(timeoutId);
   }, [controls, inView]);
 
-  const headerContainer = {
-    visible: {
-      transition: {
-        staggerChildren: 0.025,
-      },
-    },
-  };
-
   const container = {
     hidden: { opacity: 1, scale: 0 },
     visible: {
@@ -120,14 +112,14 @@ export default function Home() {
                 </Link>
               </motion.div>
             </motion.div>
-            <div className="mx-auto container bg-gradient-to-b from-teal-500 rounded-full w-80 h-80 relative overflow-hidden mt-20 md:h-96 md:w-96 border-8 border-spacing-4 border-white outline-dashed outline-4">
+            <div className="mx-auto container bg-gradient-to-b from-teal-500 rounded-full w-80 h-80 relative overflow-hidden mt-20 md:h-96 md:w-96 border-8 border-spacing-4 border-white dark:outline-none outline outline-4">
               <Image
                 src={"/noah.png"}
                 fill
                 sizes="100%"
                 priority
                 alt=""
-                className="rounded-full "
+                className="border"
               />
             </div>
           </div>

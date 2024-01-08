@@ -1,12 +1,11 @@
 "use client";
 import React from "react";
 import { BsFillMoonStarsFill } from "react-icons/bs";
-import { RegisterLink, LoginLink } from "@kinde-oss/kinde-auth-nextjs/server";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "./ui/button";
 import { DownloadIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
+import Dark from "./Dark";
 
 type Props = {
   onClick: () => void;
@@ -24,10 +23,9 @@ const NavBar = (props: Props) => {
 
       <ul className="flex items-center justify-between w-full ">
         <li>
-          <BsFillMoonStarsFill
-            onClick={props.onClick}
-            className=" cursor-pointer text-2xl"
-          />
+          <button onClick={props.onClick}>
+            <Dark />
+          </button>
         </li>
         <li>
           <button
