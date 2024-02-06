@@ -19,21 +19,7 @@ const ProjectImages: React.FC = () => {
     "/web5.png",
     "/web6.png",
   ];
-  //   return (
-  //     <div className={""}>
-  //       {/* eeddza */}
-  //       {images.map((image, index) => (
-  //         <motion.div
-  //           whileHover={{ scale: 1.2 }}
-  //           className="basis-1/4 flex-1 shadow-xl"
-  //           key={index}
-  //         >
-  //           <img src={image} alt={`Image ${index}`} />
-  //         </motion.div>
-  //       ))}
-  //     </div>
-  //   );
-  // };
+
   return (
     <Carousel className="dark:text-foreground ">
       <CarouselContent className="">
