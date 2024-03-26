@@ -41,7 +41,7 @@ export default function Home() {
     }
 
     return () => clearTimeout(timeoutId);
-  }, [controls, inView]);
+  }, [controls, inView, scoundElement]);
 
   const container = {
     hidden: { opacity: 1, scale: 0 },

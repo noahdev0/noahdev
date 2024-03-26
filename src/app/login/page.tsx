@@ -4,6 +4,7 @@ import { CiSettings } from "react-icons/ci";
 type Props = {};
 
 export default function page({}: Props) {
+  
   return (
     <div className="mx-auto text-center h-screen flex  flex-col justify-around text-white bg-black">
       <h1 className="mx-auto font-semibold text-5xl">404 - Page Not Found</h1>
