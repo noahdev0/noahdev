@@ -1,16 +1,5 @@
-import {
-  HStack,
-  Text,
-  Switch,
-  useColorMode,
-  useColorModeValue,
-  Box,
-  styled,
-  chakra,
-  BoxProps,
-  Center,
-} from "@chakra-ui/react";
-import { HTMLMotionProps, motion, Variants } from "framer-motion";
+import { useColorMode, Box, Center } from "@chakra-ui/react";
+import { motion, Variants } from "framer-motion";
 import React from "react";
 
 type Merge<P, T> = Omit<P, keyof T> & T;
@@ -31,14 +20,13 @@ const Circle = (props: any) => {
 
 const DarkModeSwitch = () => {
   const { colorMode, toggleColorMode } = useColorMode();
-  const size =25;
+  const size = 25;
 
   const containerVariants: Variants = {
     dark: {
       transition: {
         when: "beforeChildren",
         staggerChildren: 0.1,
-        // delay: 0,
       },
       backgroundColor: "#1A202C",
     },

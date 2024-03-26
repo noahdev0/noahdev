@@ -10,10 +10,25 @@ import SessionProvider from "@/components/SessionProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "noahdev0 | Noah Ben Zina",
-  description: "Personal website of Noah Ben Zina",
+  title: "noahDev0 || Noah BenZina ",
+  description: "noahdev0 fullstack developer .",
+  icons: "/favicon.ico",
+  keywords: "noah, noahdev0 , Fullstack,  MERN stack, NextJs",
+  openGraph: {
+    title: "NoahDev0 Portfolio",
+    url: "https://noahdev0.me",
+    description: "fullStack web Developer.",
+    images: [
+      {
+        url: "https://noahdev0.me/noah.png",
+        width: 500,
+        height: 500,
+        alt: "CSEN Logo",
+      },
+    ],
+  },
+  metadataBase: new URL("https://noahdev0.me/"),
 };
-
 export default async function RootLayout({
   children,
 }: {
@@ -23,9 +38,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <SessionProvider session={session}>
-        <body className={cn(inter.className)}>
-          <main>{children}</main>
-        </body>
+        <body className={cn(inter.className)}>{children}</body>
       </SessionProvider>
     </html>
   );
