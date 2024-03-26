@@ -18,10 +18,10 @@ const AnimatedText = ({ text, duration }: Props) => {
             y: [0, 10, -10, 0].map((y) => (Math.random() - 0.5) * y * 100),
             rotate: [0, 10, -10, 0].map((r) => (Math.random() - 0.5) * r * 100),
           }}
-          transition={{ duration: duration || 5 }}
+          transition={{ duration: duration! + index * 0.5 || 5 }}
           drag
           dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-          className="inline-block px-1"
+          className="inline-block "
         >
           {char}
         </motion.span>
