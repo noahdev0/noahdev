@@ -97,10 +97,10 @@ const Navbar = () => {
       variants={navVariants}
       initial="hidden"
       animate="visible"
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-background/70 ${
         scrolled
           ? "bg-background/80 shadow-sm backdrop-blur-lg supports-[backdrop-filter]:bg-background/60"
-          : "bg-background/0"
+          : "md:bg-background/0"
       }`}
       role="navigation"
       aria-label="Main navigation"
@@ -168,7 +168,7 @@ const Navbar = () => {
 
           <motion.button
             onClick={toggleMenu}
-            className="md:hidden relative z-50 p-2 rounded-md hover:bg-primary/5 transition-colors"
+            className="md:hidden relative z-9999 p-2 rounded-md hover:bg-primary transition-colors"
             aria-expanded={isOpen}
             aria-controls="mobile-menu"
             aria-label={isOpen ? "Close menu" : "Open menu"}
@@ -196,7 +196,7 @@ const Navbar = () => {
             {isOpen && (
               <motion.div
                 id="mobile-menu"
-                className="fixed inset-0 bg-background/95 backdrop-blur-sm md:hidden flex items-center justify-center"
+                className="fixed inset-0  bg-background backdrop-blur-sm min-h-screen md:hidden flex items-center justify-center"
                 variants={mobileMenuVariants}
                 initial="closed"
                 animate="open"
