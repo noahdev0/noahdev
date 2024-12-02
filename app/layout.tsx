@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     emails: ["nouhbenzina@gmail.com"],
     images: [
       {
-        url: "/zed.jpg",
+        url: "/ZED.jpg",
         width: 1200,
         height: 630,
         alt: "Noahdev0 - Portfolio",
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     title: "Noahdev0 - Web Developer & Creative Technologist",
     description:
       "Welcome to my professional portfolio showcasing web development and creative technology projects",
-    images: ["/zed.jpg"],
+    images: ["/ZED.jpg"],
     creator: "@noahdev0",
   },
   robots: {

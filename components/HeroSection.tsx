@@ -150,7 +150,7 @@ const HeroSection = () => {
               <CardContent className="p-0">
                 <div className="relative aspect-square">
                   <Image
-                    src="/zed.jpg"
+                    src="/ZED.jpg"
                     alt="Profile Picture"
                     fill
                     priority
