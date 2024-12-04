@@ -1,27 +1,24 @@
 "use client";
 import React, { useState } from "react";
-import Image from "next/image";
-import { motion } from "framer-motion";
+import { useTheme } from "next-themes";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Github, ExternalLink, ServerIcon } from "lucide-react";
 
 const ProjectsPage = () => {
   const [activeFilter, setActiveFilter] = useState("All");
+  const { theme } = useTheme();
 
   const projects = [
     {
       title: "CSEN web app with dashboard",
-      description: "CMS for csen .",
+      description: "CMS for csen.",
       technologies: [
         "Next.js",
         "TypeScript",
@@ -29,9 +26,10 @@ const ProjectsPage = () => {
         "MongoDB",
         "Framer Motion",
       ],
-      imageUrl: "/images/projects/ecommerce.png",
-      githubLink: "https://github.com/noahdev0/csen",
-      liveLink: "https://csen.com",
+      imageUrl: {
+        light: "/images/projects/csen.png",
+        dark: "/images/projects/csen.png",
+      },
       category: "Fullstack",
     },
     {
@@ -47,10 +45,10 @@ const ProjectsPage = () => {
         "Redux-thunk",
         "Redis",
       ],
-      imageUrl: "/images/projects/egs.png",
-      githubLink: "https://github.com/noahdev/",
-      liveLink: "https://egsdz.com",
-
+      imageUrl: {
+        light: "/images/projects/light-egs.png",
+        dark: "/images/projects/dark-egs.png",
+      },
       category: "Fullstack",
     },
     {
@@ -67,10 +65,11 @@ const ProjectsPage = () => {
         "AWS",
         "PostgreSQL",
       ],
-      imageUrl: "/images/projects/chatbot.png",
-      githubLink: "https://github.com/yourusername/ai-chatbot",
-      liveLink: "https://egsdz.com",
-      category: "fullstack",
+      imageUrl: {
+        light: "/images/projects/light-feeef.png",
+        dark: "/images/projects/dark-feeef.png",
+      },
+      category: "Fullstack",
     },
   ];
 
@@ -81,71 +80,53 @@ const ProjectsPage = () => {
       ? projects
       : projects.filter((project) => project.category === activeFilter);
 
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
-  const item = {
-    hidden: { y: 20, opacity: 0 },
-    show: { y: 0, opacity: 1 },
-  };
-
   return (
-    <div className="min-h-screen bg-bg-background py-16">
+    <div className="min-h-screen bg-background py-16">
       <div className="container mx-auto px-4">
-        <motion.h1
-          className="text-4xl font-bold text-center mb-12 text-primary"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+        <h1 className="text-4xl font-bold text-center mb-12 text-primary">
           My Projects
-        </motion.h1>
+        </h1>
 
         <div className="flex justify-center mb-12">
-          <Tabs
-            defaultValue="All"
-            value={activeFilter}
-            onValueChange={setActiveFilter}
-            className="w-full max-w-md"
-          >
-            <TabsList className="grid grid-cols-4">
-              {categories.map((category) => (
-                <TabsTrigger key={category} value={category}>
-                  {category}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
+          <div className="flex gap-2 p-1 rounded-lg bg-card">
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setActiveFilter(category)}
+                className={`px-4 py-2 rounded-md transition-colors ${
+                  activeFilter === category
+                    ? "bg-primary text-primary-foreground"
+                    : "hover:bg-accent"
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <motion.div
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-          variants={container}
-          initial="hidden"
-          animate="show"
-        >
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredProjects.map((project) => (
-            <motion.div key={project.title} variants={item}>
+            <div
+              key={project.title}
+              className="transform transition-all hover:-translate-y-1"
+            >
               <Card className="h-full hover:shadow-lg transition-shadow">
-                <div className="relative h-56 w-full overflow-hidden rounded-t-lg">
-                  <Image
-                    src={project.imageUrl}
+                <div className="relative h-48 overflow-hidden rounded-t-lg">
+                  <img
+                    src={
+                      theme === "dark"
+                        ? project.imageUrl.dark
+                        : project.imageUrl.light
+                    }
                     alt={project.title}
-                    fill
-                    className="object-cover transition-transform hover:scale-105 duration-300"
+                    className="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
                   />
                 </div>
 
                 <CardHeader>
-                  <CardTitle>{project.title}</CardTitle>
-                  <CardDescription>{project.description}</CardDescription>
+                  <CardTitle className="text-xl">{project.title}</CardTitle>
+                  <p className="text-muted-foreground">{project.description}</p>
                 </CardHeader>
 
                 <CardContent>
@@ -159,46 +140,27 @@ const ProjectsPage = () => {
                 </CardContent>
 
                 <CardFooter className="flex justify-between">
-                  <Button variant="outline" size="sm" asChild>
-                    <a
-                      href={project.githubLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2"
-                    >
-                      <Github className="h-4 w-4" />
-                      GitHub
-                    </a>
-                  </Button>
-                  <Button variant="default" size="sm" asChild>
-                    <a
-                      href={project.liveLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2"
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                      Live Demo
-                    </a>
-                  </Button>
+                  <button className="flex items-center gap-2 px-4 py-2 border rounded-md bg-background hover:bg-accent">
+                    <Github className="h-4 w-4" />
+                    GitHub
+                  </button>
+                  <button className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
+                    <ExternalLink className="h-4 w-4" />
+                    Live Demo
+                  </button>
                 </CardFooter>
               </Card>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
 
         {filteredProjects.length === 0 && (
-          <motion.div
-            className="text-center py-12"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-          >
-            <ServerIcon className="h-16 w-16 mx-auto text-gray-400 mb-4" />
-            <p className="text-xl text-gray-600">
+          <div className="text-center py-12">
+            <ServerIcon className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+            <p className="text-xl text-muted-foreground">
               No projects found in this category.
             </p>
-          </motion.div>
+          </div>
         )}
       </div>
     </div>

@@ -75,11 +75,14 @@ const footerLinks = {
   social: [
     { name: "GitHub", href: "https://github.com/noahdev0" },
     { name: "Meta", href: "https://facebook.com/nouh.benzina.39" },
-    { name: "LinkedIn", href: "https://linkedin.com/in/noahdev0" },
+    {
+      name: "LinkedIn",
+      href: "https://www.linkedin.com/in/nouh-ben-zina-5b6703202/",
+    },
   ],
   contact: {
     email: "nouhbenzina@gmail.com",
-    location: "Your Location",
+    location: "Telegram: @noahdev0",
   },
 };
 
@@ -137,8 +140,13 @@ export default function RootLayout({
                   <div className="space-y-3">
                     <h3 className="text-lg font-semibold">Contact</h3>
                     <div className="space-y-2 text-sm text-muted-foreground">
-                      <p>{footerLinks.contact.email}</p>
-                      <p>{footerLinks.contact.location}</p>
+                      <Link href={"mailto:nouhbenzina@gmail.com"}>
+                        {footerLinks.contact.email}
+                      </Link>
+                      <br />
+                      <Link href={"t.me/noahdev0"}>
+                        {footerLinks.contact.location}
+                      </Link>
                     </div>
                   </div>
                 </div>

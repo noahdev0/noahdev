@@ -45,23 +45,22 @@ const AboutPage = () => {
     {
       title: "Web Developer",
       company: "Freelance",
-      period: "2022 - Present",
+      period: "2023 - Present",
       description:
         "Delivering custom web solutions for clients across various industries.",
     },
     {
       title: "Junior Web Developer",
-      company: "Tech Innovate Solutions",
-      period: "2021 - 2022",
+      company: "FoorWeb",
+      period: "2022 - 2022",
       description:
         "Developed and maintained web applications using modern JavaScript frameworks.",
     },
     {
-      title: "Computer Science Graduate",
+      title: "High school Graduate",
       company: "Local University",
       period: "2017 - 2021",
-      description:
-        "Completed Bachelor's degree in Computer Science with a focus on web technologies.",
+      description: "Completed high school with a focus on web technologies.",
     },
   ];
 
