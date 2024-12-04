@@ -105,7 +105,7 @@ const AboutPage = () => {
               transition={{ type: "spring", stiffness: 300 }}
             >
               <Image
-                src="/ZED.jpg"
+                src="/about.jpg"
                 alt="Nouh Ben Zina"
                 width={500}
                 height={500}
