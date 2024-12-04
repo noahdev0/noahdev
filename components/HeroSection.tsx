@@ -19,7 +19,7 @@ const HeroSection = () => {
   const [isHovered, setIsHovered] = useState(false);
 
   const handleDownloadResume = () => {
-    window.open("/path/to/resume.pdf", "_blank");
+    window.open("/CV.pdf", "_blank");
   };
 
   const containerVariants = {
