@@ -31,7 +31,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme  } = useTheme();
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;

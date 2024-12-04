@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Github, ExternalLink, ServerIcon } from "lucide-react";
+import Image from "next/image";
 
 const ProjectsPage = () => {
   const [activeFilter, setActiveFilter] = useState("All");
@@ -84,7 +85,7 @@ const ProjectsPage = () => {
     <div className="min-h-screen bg-background py-16">
       <div className="container mx-auto px-4">
         <h1 className="text-4xl font-bold text-center mb-12 text-primary">
-          My Projects
+          My Real World 🌎 Projects
         </h1>
 
         <div className="flex justify-center mb-12">
@@ -113,7 +114,9 @@ const ProjectsPage = () => {
             >
               <Card className="h-full hover:shadow-lg transition-shadow">
                 <div className="relative h-48 overflow-hidden rounded-t-lg">
-                  <img
+                  <Image
+                    width={500}
+                    height={500}
                     src={
                       theme === "dark"
                         ? project.imageUrl.dark
