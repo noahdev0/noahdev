@@ -1,7 +1,6 @@
 import { User } from "@/models/User";
 import { MongoClient } from "mongodb";
 import mongoose from "mongoose";
-import bcrypt from "bcrypt";
 
 const connectDB = async () => {
   try {
@@ -43,8 +42,8 @@ if (process.env.NODE_ENV === "development") {
 }
 
 const getUserFromDb = async (email: string, password: string) => {
-  const hashedPws = await bcrypt.hash(password, 10);
-  const user = await User.findOne({ email, hashedPws });
+
+  const user = await User.findOne({ email, password });
   return user;
 };
 

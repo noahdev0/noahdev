@@ -60,7 +60,6 @@ export async function createProject(formData: FormData) {
       githubLink: formData.get("githubLink") as string,
       liveLink: formData.get("liveLink") as string,
       isPublic: formData.get("isPublic") === "true",
-
     };
 
     // Validate data
@@ -68,19 +67,18 @@ export async function createProject(formData: FormData) {
 
     // Connect to MongoDB
     await connectMongoDB();
-    // const Cookies = await cookies();
+    const Cookies = await cookies();
 
-    // // Get user ID from session (you'll need to implement session management)
-    // const userId = Cookies.get("userId")?.value;
-    // if (!userId) {
-    //   throw new Error("User not authenticated");
-    // }
+    // Get user ID from session (you'll need to implement session management)
+    const userId = Cookies.get("userId")?.value;
+    if (!userId) {
+      throw new Error("User not authenticated");
+    }
 
     // Create project in MongoDB
     const project = new Project({
       ...validatedData,
-      
-      // userId: new mongoose.Types.ObjectId(userId),
+      userId: new mongoose.Types.ObjectId(userId),
     });
     await project.save();
 

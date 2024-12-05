@@ -1,20 +1,11 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Plus,
-  X,
-  Save,
-  Trash2,
-  Upload,
-  Loader2,
-  Github,
-  Link as LinkIcon,
-} from "lucide-react";
+import { Plus, X, Save, ImagePlus, Trash2 } from "lucide-react";
 import Image from "next/image";
 
-import { uploadBlob } from "@/lib/actions/project-action";
+import { createProject, updateProject, uploadBlob } from "@/lib/actions/project-action";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -27,139 +18,48 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
+// import { uploadBlob } from "@/lib/blob-upload";
 
-// Type definitions
-interface Project {
-  _id?: string;
-  title?: string;
-  description?: string;
-  technologies?: string[];
-  githubLink?: string;
-  liveLink?: string;
-  isPublic?: boolean;
-  images?: string[];
-}
-
-// Validation helpers
-const isValidUrl = (url: string) => {
-  try {
-    new URL(url);
-    return true;
-  } catch {
-    return false;
-  }
-};
-
-// Enhanced Input Component with Error State
-const ErrorInput = ({
-  error,
-  icon: Icon,
-  ...props
-}: React.InputHTMLAttributes<HTMLInputElement> & {
-  error?: string;
-  icon?: React.ElementType;
-}) => (
-  <div className="space-y-1">
-    <div className="relative">
-      {Icon && (
-        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-          <Icon className="h-4 w-4" />
-        </div>
-      )}
-      <Input
-        {...props}
-        className={`
-          ${props.className || ""} 
-          ${error ? "border-destructive focus:ring-destructive" : ""}
-          ${Icon ? "pl-10" : ""}
-        `}
-      />
-    </div>
-    {error && <p className="text-destructive text-sm">{error}</p>}
-  </div>
-);
-
-export default function ProjectForm({
-  initialProject = null,
-}: {
-  initialProject?: Project | null;
-}) {
+export default function ProjectForm({ initialProject = null }) {
   const router = useRouter();
+  const [technologies, setTechnologies] = useState(
+    initialProject?.technologies || []
+  );
+  const [newTech, setNewTech] = useState("");
+  const [isPublic, setIsPublic] = useState(initialProject?.isPublic || false);
+  const [loading, setLoading] = useState(false);
 
-  // Form state management
-  const [state, setState] = useState({
-    technologies: initialProject?.technologies || [],
-    newTech: "",
-    isPublic: initialProject?.isPublic || false,
-    loading: false,
-    projectImages: initialProject?.images
+  // Image upload state
+  const [projectImages, setProjectImages] = useState<File[]>(
+    initialProject?.images
       ? initialProject.images.map((url) => ({ name: url }))
-      : [],
-    previewImages: initialProject?.images || [],
-  });
+      : []
+  );
+  const [previewImages, setPreviewImages] = useState<string[]>(
+    initialProject?.images || []
+  );
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Validation state
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
-  // Form validation
-  const validateForm = useCallback((formData: FormData) => {
-    const title = formData.get("title") as string;
-    const description = formData.get("description") as string;
-    const githubLink = formData.get("githubLink") as string;
-    const liveLink = formData.get("liveLink") as string;
-
-    const newErrors: { [key: string]: string } = {};
-
-    if (!title || title.trim().length < 3) {
-      newErrors.title = "Title must be at least 3 characters long";
+  const handleAddTechnology = () => {
+    if (newTech.trim() && !technologies.includes(newTech.trim())) {
+      setTechnologies([...technologies, newTech.trim()]);
+      setNewTech("");
     }
+  };
 
-    if (!description || description.trim().length < 10) {
-      newErrors.description = "Description must be at least 10 characters long";
-    }
+  const handleRemoveTechnology = (techToRemove) => {
+    setTechnologies(technologies.filter((tech) => tech !== techToRemove));
+  };
 
-    if (githubLink && !isValidUrl(githubLink)) {
-      newErrors.githubLink = "Invalid GitHub URL";
-    }
-
-    if (liveLink && !isValidUrl(liveLink)) {
-      newErrors.liveLink = "Invalid Live Project URL";
-    }
-
-    return newErrors;
-  }, []);
-
-  // Technology handlers
-  const handleAddTechnology = useCallback(() => {
-    const newTech = state.newTech.trim();
-    if (newTech && !state.technologies.includes(newTech)) {
-      setState((prev) => ({
-        ...prev,
-        technologies: [...prev.technologies, newTech],
-        newTech: "",
-      }));
-    }
-  }, [state.newTech, state.technologies]);
-
-  const handleRemoveTechnology = useCallback((techToRemove: string) => {
-    setState((prev) => ({
-      ...prev,
-      technologies: prev.technologies.filter((tech) => tech !== techToRemove),
-    }));
-  }, []);
-
-  // Image upload handlers
-  const handleImageUpload = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const files = event.target.files;
-      if (!files) return;
-
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files) {
       const newFiles = Array.from(files);
       const validImageFiles = newFiles.filter(
-        (file) => file.type.startsWith("image/") && file.size <= 5 * 1024 * 1024
+        (file) => file.type.startsWith("image/") && file.size <= 5 * 1024 * 1024 // 5MB limit
       );
 
-      if (state.projectImages.length + validImageFiles.length > 5) {
+      if (validImageFiles.length + projectImages.length > 5) {
         toast({
           title: "Error",
           description: "Maximum of 5 images allowed",
@@ -172,264 +72,136 @@ export default function ProjectForm({
         URL.createObjectURL(file)
       );
 
-      setState((prev) => ({
-        ...prev,
-        projectImages: [...prev.projectImages, ...validImageFiles],
-        previewImages: [...prev.previewImages, ...newPreviewUrls],
-      }));
-    },
-    [state.projectImages]
-  );
-
-  const removeImage = useCallback((indexToRemove: number) => {
-    setState((prev) => ({
-      ...prev,
-      projectImages: prev.projectImages.filter(
-        (_, index) => index !== indexToRemove
-      ),
-      previewImages: prev.previewImages.filter(
-        (_, index) => index !== indexToRemove
-      ),
-    }));
-  }, []);
-
-  // Drag and drop image upload
-  const [isDragOver, setIsDragOver] = useState(false);
-
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setIsDragOver(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setIsDragOver(false);
-  };
-
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setIsDragOver(false);
-
-    const files = e.dataTransfer.files;
-    if (files) {
-      handleImageUpload({
-        target: { files },
-      } as React.ChangeEvent<HTMLInputElement>);
+      setProjectImages((prev) => [...prev, ...validImageFiles]);
+      setPreviewImages((prev) => [...prev, ...newPreviewUrls]);
     }
   };
 
-  // Submit handler
-  const handleSubmit = useCallback(
-    async (formData: FormData) => {
-      // Validate form
-      const validationErrors = validateForm(formData);
+  const removeImage = (indexToRemove: number) => {
+    setProjectImages((prev) =>
+      prev.filter((_, index) => index !== indexToRemove)
+    );
+    setPreviewImages((prev) =>
+      prev.filter((_, index) => index !== indexToRemove)
+    );
 
-      if (Object.keys(validationErrors).length > 0) {
-        setErrors(validationErrors);
-        toast({
-          title: "Validation Error",
-          description: "Please check the form for errors",
-          variant: "destructive",
+    // Reset file input to allow re-uploading same file
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  async function handleSubmit(formData) {
+    setLoading(true);
+    try {
+      // Upload images to blob storage first
+      const uploadedImageUrls = await Promise.all(
+        projectImages
+          .filter((image) => image instanceof File)
+          .map(async (image) => {
+            if (image instanceof File) {
+              return await uploadBlob(image);
+            }
+            return image;
+          })
+      );
+
+      const projectData = {
+        ...Object.fromEntries(formData),
+        technologies: technologies,
+        isPublic: isPublic,
+        images: [...previewImages, ...uploadedImageUrls],
+      };
+
+      let result;
+      if (initialProject) {
+        const formData = new FormData();
+        Object.entries(projectData).forEach(([key, value]) => {
+          if (Array.isArray(value)) {
+            value.forEach((item) => formData.append(key, item));
+          } else {
+            formData.append(key, value);
+          }
         });
-        return;
+        result = await updateProject(initialProject._id, formData);
+      } else {
+        const formData = new FormData();
+        Object.entries(projectData).forEach(([key, value]) => {
+          if (Array.isArray(value)) {
+            value.forEach((item) => formData.append(key, item));
+          } else {
+            formData.append(key, value);
+          }
+        });
+        result = await createProject(formData);
       }
 
-      // Clear previous errors
-      setErrors({});
-
-      // Set loading state
-      setState((prev) => ({ ...prev, loading: true }));
-
-      try {
-        // Upload new images
-        const uploadedImageUrls = await Promise.all(
-          state.projectImages
-            .filter((image) => image instanceof File)
-            .map(async (image) => {
-              if (image instanceof File) {
-                return await uploadBlob(image);
-              }
-              return image;
-            })
-        );
-
-        const projectData = {
-          ...Object.fromEntries(formData),
-          technologies: state.technologies,
-          isPublic: state.isPublic,
-          images: [...state.previewImages, ...uploadedImageUrls],
-        };
-
-        const fetchOptions = {
-          method: "POST",
-          body: Object.entries(projectData).reduce((formData, [key, value]) => {
-            if (Array.isArray(value)) {
-              value.forEach((item) => formData.append(`${key}[]`, item));
-            } else {
-              formData.append(key, value.toString());
-            }
-            return formData;
-          }, new FormData()),
-        };
-
-        const apiEndpoint = initialProject
-          ? `/api/project/${initialProject._id}`
-          : "/api/project";
-
-        const result = await fetch(apiEndpoint, fetchOptions).then((res) =>
-          res.json()
-        );
-
-        if (result.success) {
-          toast({
-            title: "Success",
-            description: initialProject
-              ? "Project updated successfully"
-              : "Project created successfully",
-          });
-          router.push("/dashboard");
-        } else {
-          toast({
-            title: "Error",
-            description: result.error,
-            variant: "destructive",
-          });
-        }
-      } catch (error) {
+      if (result.success) {
+        toast({
+          title: "Success",
+          description: initialProject
+            ? "Project updated successfully"
+            : "Project created successfully",
+        });
+        router.push("/dashboard");
+      } else {
         toast({
           title: "Error",
-          description: "An unexpected error occurred",
+          description: result.error,
           variant: "destructive",
         });
-      } finally {
-        setState((prev) => ({ ...prev, loading: false }));
       }
-    },
-    [
-      state.technologies,
-      state.isPublic,
-      state.projectImages,
-      state.previewImages,
-      initialProject,
-      router,
-      validateForm,
-    ]
-  );
-
-  // Memoized renderers
-  const technologyList = useMemo(
-    () =>
-      state.technologies.map((tech) => (
-        <div
-          key={tech}
-          className="flex items-center bg-muted px-2 py-1 rounded-md space-x-2"
-        >
-          <span className="text-sm">{tech}</span>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="h-6 w-6"
-            onClick={() => handleRemoveTechnology(tech)}
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-      )),
-    [state.technologies, handleRemoveTechnology]
-  );
-
-  const imagePreviewList = useMemo(
-    () =>
-      state.previewImages.map((imageUrl, index) => (
-        <div
-          key={index}
-          className="relative w-24 h-24 border rounded-lg overflow-hidden group"
-        >
-          <Image
-            src={imageUrl}
-            alt={`Project image ${index + 1}`}
-            fill
-            className="object-cover group-hover:scale-110 transition-transform"
-          />
-          <Button
-            type="button"
-            variant="destructive"
-            size="icon"
-            className="absolute top-1 right-1 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-            onClick={() => removeImage(index)}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </div>
-      )),
-    [state.previewImages, removeImage]
-  );
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
-    <div className="container mx-auto max-w-2xl p-4 sm:p-6 md:p-8">
-      <Card className="w-full">
+    <div className="container mx-auto max-w-2xl p-6">
+      <Card>
         <CardHeader>
           <CardTitle>
             {initialProject ? "Edit Project" : "Create New Project"}
           </CardTitle>
         </CardHeader>
         <form action={handleSubmit}>
-          <CardContent className="space-y-6">
-            {/* Project Title */}
+          <CardContent className="space-y-4">
             <div>
-              <label className="block mb-2 text-sm font-medium">
-                Project Title
-              </label>
-              <ErrorInput
+              <label className="block mb-2">Project Title</label>
+              <Input
                 type="text"
                 name="title"
                 defaultValue={initialProject?.title}
                 placeholder="Enter project title"
                 required
-                error={errors.title}
               />
             </div>
 
-            {/* Description */}
             <div>
-              <label className="block mb-2 text-sm font-medium">
-                Description
-              </label>
+              <label className="block mb-2">Description</label>
               <Textarea
                 name="description"
                 defaultValue={initialProject?.description}
                 placeholder="Describe your project"
                 required
                 rows={4}
-                className={errors.description ? "border-destructive" : ""}
               />
-              {errors.description && (
-                <p className="text-destructive text-sm mt-1">
-                  {errors.description}
-                </p>
-              )}
             </div>
 
-            {/* Technologies */}
             <div>
-              <label className="block mb-2 text-sm font-medium">
-                Technologies
-              </label>
+              <label className="block mb-2">Technologies</label>
               <div className="flex gap-2 mb-2">
                 <Input
                   type="text"
-                  value={state.newTech}
-                  onChange={(e) =>
-                    setState((prev) => ({ ...prev, newTech: e.target.value }))
-                  }
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === ",") {
-                      e.preventDefault();
-                      handleAddTechnology();
-                    }
-                  }}
-                  placeholder="Add technology (Press Enter or , to add)"
+                  value={newTech}
+                  onChange={(e) => setNewTech(e.target.value)}
+                  placeholder="Add technology"
                 />
                 <Button
                   type="button"
@@ -439,117 +211,108 @@ export default function ProjectForm({
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
-              <div className="flex flex-wrap gap-2">{technologyList}</div>
+              <div className="flex flex-wrap gap-2">
+                {technologies.map((tech) => (
+                  <div
+                    key={tech}
+                    className="flex items-center bg-muted px-2 py-1 rounded"
+                  >
+                    {tech}
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleRemoveTechnology(tech)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {/* Project Links */}
             <div>
-              <label className="block mb-2 text-sm font-medium">
-                Project Links
-              </label>
-              <ErrorInput
+              <label className="block mb-2">Project Links</label>
+              <Input
                 type="url"
                 name="githubLink"
                 defaultValue={initialProject?.githubLink}
                 placeholder="GitHub Repository Link"
                 className="mb-2"
-                icon={Github}
-                error={errors.githubLink}
               />
-              <ErrorInput
+              <Input
                 type="url"
                 name="liveLink"
                 defaultValue={initialProject?.liveLink}
                 placeholder="Live Project Link"
-                icon={LinkIcon}
-                error={errors.liveLink}
               />
             </div>
 
-            {/* Visibility Toggle */}
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="project-visibility"
-                checked={state.isPublic}
-                onCheckedChange={(checked) =>
-                  setState((prev) => ({ ...prev, isPublic: checked }))
-                }
-              />
-              <label htmlFor="project-visibility" className="text-sm">
-                Make project public
-              </label>
-            </div>
-
-            {/* Image Upload */}
             <div>
-              <label className="block mb-2 text-sm font-medium">
-                Project Images (Max 5)
-              </label>
-              <div
-                className={`
-                  border-2 border-dashed rounded-lg p-6 text-center 
-                  transition-colors duration-300
-                  ${
-                    isDragOver
-                      ? "border-blue-500 bg-blue-50"
-                      : "border-gray-300"
-                  }
-                `}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-              >
-                <input
+              <label className="block mb-2">Project Images (Max 5)</label>
+              <div className="flex items-center gap-2 mb-2">
+                <Input
                   type="file"
-                  multiple
+                  ref={fileInputRef}
                   accept="image/*"
+                  multiple
                   onChange={handleImageUpload}
                   className="hidden"
-                  id="file-upload"
+                  id="project-image-upload"
                 />
-                <label htmlFor="file-upload" className="cursor-pointer">
-                  <div className="flex flex-col items-center">
-                    <Upload className="h-10 w-10 text-gray-400 mb-2" />
-                    <p className="text-gray-600">
-                      {isDragOver
-                        ? "Drop files here"
-                        : "Drag and drop files or click to upload"}
-                    </p>
-                    <p className="text-sm text-gray-500 mt-1">
-                      (Max 5 images, each under 5MB)
-                    </p>
-                  </div>
+                <label htmlFor="project-image-upload">
+                  <Button 
+                  
+                  type="button" variant="outline">
+                    <ImagePlus className="h-4 w-4 mr-2" /> Upload Images
+                  </Button>
                 </label>
               </div>
 
               {/* Image Preview */}
-              <div className="flex flex-wrap gap-2 mt-4">
-                {imagePreviewList}
+              <div className="flex flex-wrap gap-2 mt-2">
+                {previewImages.map((imageUrl, index) => (
+                  <div
+                    key={index}
+                    className="relative w-24 h-24 border rounded overflow-hidden"
+                  >
+                    <Image
+                      src={imageUrl}
+                      alt={`Project image ${index + 1}`}
+                      fill
+                      className="object-cover"
+                    />
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="icon"
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
+                      onClick={() => removeImage(index)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
               </div>
             </div>
-          </CardContent>
 
-          {/* Form Footer with Submit Button */}
-          <CardFooter className="flex justify-end space-x-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.push("/dashboard")}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={state.loading}>
-              {state.loading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
-                </>
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="isPublic"
+                checked={isPublic}
+                onCheckedChange={setIsPublic}
+              />
+              <label htmlFor="isPublic">Make this project public</label>
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button type="submit" disabled={loading} className="w-full">
+              {loading ? (
+                <div className="animate-spin mr-2">●</div>
               ) : (
-                <>
-                  <Save className="mr-2 h-4 w-4" />
-                  {initialProject ? "Update Project" : "Create Project"}
-                </>
+                <Save className="h-4 w-4 mr-2" />
               )}
+              {initialProject ? "Update Project" : "Create Project"}
             </Button>
           </CardFooter>
         </form>
