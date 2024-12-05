@@ -12,12 +12,12 @@ const ADMIN_ROUTES = [
 
 export default auth((req) => {
   // If user is not authenticated, redirect to login
-  if (!req.auth) {
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
+  // if (!req.auth) {
+  //   return NextResponse.redirect(new URL("/", req.url));
+  // }
 
   // Check if the current user is the admin
-  const isAdmin = req.auth.user.name === "noahdev0";
+  const isAdmin = req.auth?.user?.name === "noahdev0";
 
   // If the user is trying to access an admin route
   const isAdminRoute = ADMIN_ROUTES.some((route) =>
