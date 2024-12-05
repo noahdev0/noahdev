@@ -48,6 +48,12 @@ export const metadata: Metadata = {
         height: 630,
         alt: "Noahdev0 - Portfolio",
       },
+      {
+        url: "/ZED.jpg",
+        width: 1200,
+        height: 627,
+        alt: "Noahdev0 - Portfolio",
+      },
     ],
   },
   twitter: {

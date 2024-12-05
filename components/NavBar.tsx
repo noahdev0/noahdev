@@ -17,7 +17,6 @@ import {
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { useTheme } from "next-themes";
-// import { AuthButton } from "./auth-button";
 
 const navItems = [
   { href: "/", label: "Home", icon: Home },
@@ -31,7 +30,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
-  const { theme, setTheme  } = useTheme();
+  const { theme, setTheme } = useTheme();
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
@@ -129,7 +128,6 @@ const Navbar = () => {
           </Link>
 
           <div className="hidden md:flex items-center gap-1">
-            {/* <AuthButton /> */}
             {navItems.map((item) => (
               <Link key={item.href} href={item.href} className="relative">
                 <motion.div
