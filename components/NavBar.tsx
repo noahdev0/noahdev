@@ -24,6 +24,7 @@ const navItems = [
   { href: "/projects", label: "Projects", icon: Code },
   { href: "/skills", label: "Skills", icon: Hammer },
   { href: "/contact", label: "Contact", icon: Send },
+{ href: "/playground", label: "Playground (Beta)", icon: Send },
 ];
 
 const Navbar = () => {
